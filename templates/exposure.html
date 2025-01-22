@@ -1,0 +1,52 @@
+{% extends "deck1.html" %}
+
+{% block content %}
+<div class="slider-container">
+    <form id="effectForm">
+        <label for="exposure">Exposure</label>
+        <input type="range" id="exposure" name="exposure" min="0" max="1" step="0.01" value="0.5">
+        <span id="exposureValue">0.5</span>
+    </form>
+</div>
+
+<script>
+    const slider = document.getElementById('exposure');
+    const display = document.getElementById('exposureValue');
+
+    slider.addEventListener('input', async (e) => {
+        const value = e.target.value;
+        display.textContent = value;
+
+        try {
+            const response = await fetch('/update_exposure', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ value: value })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to set effect');
+            }
+        } catch (error) {
+            console.error('Error', error);
+        }
+    });
+</script>
+
+<style>
+    .slider-container {
+        margin: 20px;
+        padding: 15px;
+        background-color: #f1f1f1;
+        border-radius: 5px;
+
+    }
+
+    input[type="range"] {
+        width: 200px;
+        margin: 0 10px;
+    }
+</style>
+{% endblock %}

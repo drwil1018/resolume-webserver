@@ -1,0 +1,16 @@
+{% extends "index.html" %}
+
+{% block content %}
+    <h1>Data</h1>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    
+    {% if data %}
+        <pre>{{ data|tojson(indent=2) }}</pre>
+    {% endif %}
+{% endblock %}
