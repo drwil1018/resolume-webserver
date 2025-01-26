@@ -9,10 +9,12 @@
 </head>
 
 <body>
-    <h1>Home</h1>
-    <button><a href="{{ url_for('deck1') }}">Deck 1</a></button>
-    <button><a href="{{ url_for('deck2') }}">Deck 2</a></button>
-    <button><a href="{{ url_for('deck3') }}">Deck 3</a></button>
+    <h1>Resolume Webserver</h1>
+    <div class="button-container">
+        <button class="button" onclick="window.location.href='{{ url_for('deck1') }}'">Deck 1</button>
+        <button class="button" onclick="window.location.href='{{ url_for('deck2') }}'">Deck 2</button>
+        <button class="button" onclick="window.location.href='{{ url_for('deck3') }}'">Deck 3</button>
+    </div>
     {% block content %}{% endblock %}
     {% block scripts %}{% endblock %}
 </body>

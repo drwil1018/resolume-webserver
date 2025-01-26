@@ -1,4 +1,0 @@
-Make a conditional that makes the exposure slider only appear if selected effect has an exposure effect on it
-Have the exposure slider be able to take input from the actual exposure value in Resolume and list its starting value accordingly (level = impossible)
-Come up with new solution for cleared clips breaking the thumbnail loop (probaly just remove the individual clip delete since upload should override the selected clip so there's no need to delete an individual clip)
-Change or add new logic to clip highlighting feature that allows for selected clip to be un-highlighted when a new deck is chosen

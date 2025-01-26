@@ -59,4 +59,16 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    // Upload message
+    document.getElementById('file').addEventListener('change', function(e) {
+        const status = document.getElementById('uploadStatus');
+        if (this.files && this.files[0]) {
+            status.textContent = `Selected file: ${this.files[0].name}`;
+            status.classList.add('visible');
+        } else {
+            status.textContent = 'No file selected';
+            status.classList.remove('visible');
+        }
+    });
 });
