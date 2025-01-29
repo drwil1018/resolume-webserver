@@ -3,7 +3,7 @@ import requests
 import logging
 from werkzeug.utils import secure_filename
 import os
-from utils import select_deck
+from utils import select_deck, check_effects
 
 
 app = Flask(__name__, template_folder="templates", static_url_path='', static_folder="static")
@@ -36,7 +36,13 @@ def deck1():
     session['current_deck'] = "deck1"
     deck_index = 1
     try:
-        select, update, update2, thumbnails = select_deck(deck_index, base_url)
+        select, update, update2, thumbnails, total_clips = select_deck(deck_index, base_url)
+        session["total_clips"] = total_clips
+        expose_value = check_effects(base_url)
+        if expose_value is not None:
+            session["show_slider"] = True
+        else:
+            session.pop("show_slider", None)
 
         
         if select.status_code != 204:
@@ -53,7 +59,7 @@ def deck1():
             return render_template(f"{deck}.html")
         
         deck = session.get("current_deck")
-        return render_template(f"{deck}.html", thumbnails=thumbnails)
+        return render_template(f"{deck}.html", thumbnails=thumbnails, expose_value=expose_value)
         
     
     except requests.RequestException as e:
@@ -66,7 +72,13 @@ def deck2():
     session['current_deck'] = "deck2"
     deck_index = 2
     try:
-        select, update, update2, thumbnails = select_deck(deck_index, base_url)
+        select, update, update2, thumbnails, total_clips = select_deck(deck_index, base_url)
+        session["total_clips"] = total_clips
+        expose_value = check_effects(base_url)
+        if expose_value is not None:
+            session["show_slider"] = True
+        else:
+            session.pop("show_slider", None)
 
         
         if select.status_code != 204:
@@ -83,7 +95,7 @@ def deck2():
             return render_template(f"{deck}.html")
         
         deck = session.get("current_deck")
-        return render_template(f"{deck}.html", thumbnails=thumbnails)
+        return render_template(f"{deck}.html", thumbnails=thumbnails, expose_value=expose_value)
         
     
     except requests.RequestException as e:
@@ -96,9 +108,14 @@ def deck3():
     session['current_deck'] = "deck3"
     deck_index = 3
     try:
-        select, update, update2, thumbnails = select_deck(deck_index, base_url)
+        select, update, update2, thumbnails, total_clips = select_deck(deck_index, base_url)
+        session["total_clips"] = total_clips
+        expose_value = check_effects(base_url)
+        if expose_value is not None:
+            session["show_slider"] = True
+        else:
+            session.pop("show_slider", None)
 
-        
         if select.status_code != 204:
             flash(f'Error: {select.status_code}', 'error, could not select deck')
             deck = session.get("current_deck")
@@ -113,7 +130,7 @@ def deck3():
             return render_template(f"{deck}.html")
         
         deck = session.get("current_deck")
-        return render_template(f"{deck}.html", thumbnails=thumbnails)
+        return render_template(f"{deck}.html", thumbnails=thumbnails, expose_value=expose_value)
         
     
     except requests.RequestException as e:
@@ -124,7 +141,7 @@ def deck3():
 @app.route("/data")
 def data():
     try:
-        response = requests.get(f"{base_url}/composition")
+        response = requests.get(f"{base_url}/composition/clips/selected")
         
         if response.status_code != 200:
             flash('Error: Could not complete request', 'error')
@@ -232,6 +249,8 @@ def upload_file():
         return redirect(url_for(current_deck))
     
     file = request.files['file']
+    total_clips = session.get("total_clips")
+    
 
     if file.filename == '':
         flash('No selected file', 'error')
@@ -239,6 +258,7 @@ def upload_file():
         return redirect(url_for(current_deck))
     
     if file:
+        select_clip(total_clips + 1)
         filename = secure_filename(file.filename)
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(file_path)
@@ -254,23 +274,7 @@ def upload_file():
         flash('File successfully uploaded', 'success')
         current_deck = session.get("current_deck")
         return redirect(url_for(current_deck))
-
-@app.route("/clear_selected")
-def clear_selected():
-    try:
-        response = requests.post(f"{base_url}/composition/clips/selected/clear")
-
-        if response.status_code != 204:
-            flash(f'Error: {response.status_code}', 'error, could not clear selected')
-        else:
-            current_deck = session.get("current_deck")
-            return redirect(url_for(current_deck))
-        
-    except requests.RequestException as e:
-        flash(f'Connection error: {str(e)}', 'error')
-        current_deck = session.get("current_deck")
-        return redirect(url_for(current_deck))
-    
+   
 @app.route("/clear_all")
 def clear_all():
     try:

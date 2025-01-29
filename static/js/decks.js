@@ -13,6 +13,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Thumbnail selection
+    const currrentDeck = window.location.pathname.split('/').pop();
+    storedDeck = sessionStorage.getItem('currentDeck');
+    if (storedDeck && storedDeck !== currrentDeck) {
+        sessionStorage.removeItem('selectedClipIndex');
+    }
+    sessionStorage.setItem('currentDeck', currrentDeck);
     let selectedThumbnail = null;
     const storedIndex = sessionStorage.getItem('selectedClipIndex');
     

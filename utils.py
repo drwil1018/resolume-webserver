@@ -25,5 +25,19 @@ def select_deck(deck_index, base_url):
             clip_index += 1
         else:
             break
+    
+    total_clips = len(thumbnails)
+    return select, update, update2, thumbnails, total_clips
 
-    return select, update, update2, thumbnails
+
+def check_effects(base_url):
+        response = requests.get(f"{base_url}/composition/clips/selected")
+        if response.status_code == 200:
+            data = response.json()
+            effects = data.get('video', {}).get('effects', [])
+            
+            if len(effects) > 1:
+                if effects[1].get('name') == 'Exposure':
+                    expose_value = round(effects[1].get('params', {}).get('Exposure', {}).get('value'), 2)
+                    return expose_value
+                    
