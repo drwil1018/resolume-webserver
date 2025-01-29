@@ -5,7 +5,7 @@ import base64
 
 def select_deck(deck_index, base_url):
     select = requests.post(f"{base_url}/composition/decks/{deck_index}/select")
-    sleep(0.25)
+    sleep(0.3)
     update = requests.put(
         f"{base_url}/composition/layers/1",
         json={"video": {"opacity": {"value": 1.0}}}
@@ -15,19 +15,23 @@ def select_deck(deck_index, base_url):
     )
 
     thumbnails = []
+    titles = []
     clip_index = 1
     while True:
         thumbnail = requests.get(f"{base_url}/composition/layers/1/clips/{clip_index}/thumbnail")
         decoded_thumbnail = base64.b64encode(thumbnail.content).decode("utf-8")
+        clip_data = requests.get(f"{base_url}/composition/layers/1/clips/{clip_index}")
+        title = clip_data.json().get('name', {}).get('value')
         
         if len(decoded_thumbnail) > 528:
             thumbnails.append(decoded_thumbnail)
+            titles.append(title)
             clip_index += 1
         else:
             break
     
     total_clips = len(thumbnails)
-    return select, update, update2, thumbnails, total_clips
+    return select, update, update2, thumbnails, total_clips, titles
 
 
 def check_effects(base_url):

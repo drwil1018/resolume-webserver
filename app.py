@@ -36,7 +36,7 @@ def deck1():
     session['current_deck'] = "deck1"
     deck_index = 1
     try:
-        select, update, update2, thumbnails, total_clips = select_deck(deck_index, base_url)
+        select, update, update2, thumbnails, total_clips, titles = select_deck(deck_index, base_url)
         session["total_clips"] = total_clips
         expose_value = check_effects(base_url)
         if expose_value is not None:
@@ -59,7 +59,7 @@ def deck1():
             return render_template(f"{deck}.html")
         
         deck = session.get("current_deck")
-        return render_template(f"{deck}.html", thumbnails=thumbnails, expose_value=expose_value)
+        return render_template(f"{deck}.html", thumbnails=thumbnails, expose_value=expose_value, titles=titles, zip=zip)
         
     
     except requests.RequestException as e:
@@ -72,7 +72,7 @@ def deck2():
     session['current_deck'] = "deck2"
     deck_index = 2
     try:
-        select, update, update2, thumbnails, total_clips = select_deck(deck_index, base_url)
+        select, update, update2, thumbnails, total_clips, titles = select_deck(deck_index, base_url)
         session["total_clips"] = total_clips
         expose_value = check_effects(base_url)
         if expose_value is not None:
@@ -95,7 +95,7 @@ def deck2():
             return render_template(f"{deck}.html")
         
         deck = session.get("current_deck")
-        return render_template(f"{deck}.html", thumbnails=thumbnails, expose_value=expose_value)
+        return render_template(f"{deck}.html", thumbnails=thumbnails, expose_value=expose_value, titles=titles, zip=zip)
         
     
     except requests.RequestException as e:
@@ -108,7 +108,7 @@ def deck3():
     session['current_deck'] = "deck3"
     deck_index = 3
     try:
-        select, update, update2, thumbnails, total_clips = select_deck(deck_index, base_url)
+        select, update, update2, thumbnails, total_clips, titles = select_deck(deck_index, base_url)
         session["total_clips"] = total_clips
         expose_value = check_effects(base_url)
         if expose_value is not None:
@@ -130,7 +130,7 @@ def deck3():
             return render_template(f"{deck}.html")
         
         deck = session.get("current_deck")
-        return render_template(f"{deck}.html", thumbnails=thumbnails, expose_value=expose_value)
+        return render_template(f"{deck}.html", thumbnails=thumbnails, expose_value=expose_value, titles=titles, zip=zip)
         
     
     except requests.RequestException as e:
@@ -141,7 +141,7 @@ def deck3():
 @app.route("/data")
 def data():
     try:
-        response = requests.get(f"{base_url}/composition/clips/selected")
+        response = requests.get(f"{base_url}/composition/layers/1/clips/{1}")
         
         if response.status_code != 200:
             flash('Error: Could not complete request', 'error')
@@ -279,6 +279,15 @@ def upload_file():
 def clear_all():
     try:
         response = requests.post(f"{base_url}/composition/layers/1/clearclips")
+
+        upload_folder = app.config['UPLOAD_FOLDER']
+        for file in os.listdir(upload_folder):
+            file_path = os.path.join(upload_folder, file)
+            try:
+                if os.path.isfile(file_path):
+                    os.unlink(file_path)
+            except Exception as e:
+                flash (f'Error: {str(e)}', 'error, could not delete file')
 
         if response.status_code != 204:
             flash(f'Error: {response.status_code}', 'error, could not clear all')

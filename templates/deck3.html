@@ -12,9 +12,10 @@
 
 
     <div class="thumbnail-grid">
-        {% for thumbnail in thumbnails %}
+        {% for thumbnail, title in zip(thumbnails, titles) %}
             <a href="{{ url_for('select_clip', clip_index=loop.index) }}">
-                <img src="data:image/jpeg;base64,{{ thumbnail }}" alt="File {{ loop.index }}">
+                <img src="data:image/jpeg;base64,{{ thumbnail }}" alt="File {{ title }}">
+                <span class ="thumbnail-label">{{ title }}</span>
             </a>
         {% endfor %}
     </div>

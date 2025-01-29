@@ -148,8 +148,9 @@ a:hover {
 
 .thumbnail-grid a {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
+    text-decoration: none;
     aspect-ratio: 16/9;
     position: relative;
     width: 100%;
@@ -206,4 +207,12 @@ a:hover {
 
 .button:hover {
     background-color: #445446;
+}
+
+.thumbnail-label {
+    margin-top: 5px;
+    font-family: 'Karmina', serif;
+    color: #4e472f;
+    text-align: center;
+    font-size: 12px;
 }
