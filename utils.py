@@ -1,13 +1,11 @@
+from flask import session
 import requests
-from time import sleep
 import base64
 
 
-def select_deck(deck_index, base_url):
-    select = requests.post(f"{base_url}/composition/decks/{deck_index}/select")
-    sleep(0.3)
+def select_deck(layer_index, base_url):
     update = requests.put(
-        f"{base_url}/composition/layers/1",
+        f"{base_url}/composition/layers/{layer_index}",
         json={"video": {"opacity": {"value": 1.0}}}
     )
     update2 = requests.put(
@@ -18,9 +16,9 @@ def select_deck(deck_index, base_url):
     titles = []
     clip_index = 1
     while True:
-        thumbnail = requests.get(f"{base_url}/composition/layers/1/clips/{clip_index}/thumbnail")
+        thumbnail = requests.get(f"{base_url}/composition/layers/{layer_index}/clips/{clip_index}/thumbnail")
         decoded_thumbnail = base64.b64encode(thumbnail.content).decode("utf-8")
-        clip_data = requests.get(f"{base_url}/composition/layers/1/clips/{clip_index}")
+        clip_data = requests.get(f"{base_url}/composition/layers/{layer_index}/clips/{clip_index}")
         title = clip_data.json().get('name', {}).get('value')
         
         if len(decoded_thumbnail) > 528:
@@ -31,7 +29,7 @@ def select_deck(deck_index, base_url):
             break
     
     total_clips = len(thumbnails)
-    return select, update, update2, thumbnails, total_clips, titles
+    return update, update2, thumbnails, total_clips, titles
 
 
 def check_effects(base_url):
@@ -41,13 +39,28 @@ def check_effects(base_url):
                 data = response.json()
                 effects = data.get('video', {}).get('effects', [])
                 
-                if len(effects) > 1:
-                    if effects[1].get('name') == 'Exposure':
-                        expose_value = round(effects[1].get('params', {}).get('Exposure', {}).get('value'), 2)
-                        return expose_value
+                if len(effects) > 2:
+                    session["effects"] = True
+                    scale_value = round(effects[0].get('params', {}).get('Scale', {}).get('value'))
+                    shiftx_value = round(effects[0].get('params', {}).get('Position X', {}).get('value'))
+                    shifty_value = round(effects[0].get('params', {}).get('Position Y', {}).get('value'))
+                    expose_value = round(effects[1].get('params', {}).get('Exposure', {}).get('value'), 2)
+                    hue_value = round(effects[2].get('params', {}).get('Hue Rotate', {}).get('value'), 2)
+                    sat_value = round(effects[2].get('params', {}).get('Sat. Scale', {}).get('value'), 2)
+                    print(f"expose: {expose_value}, hue: {hue_value}, scale: {scale_value}, shiftx: {shiftx_value}, shifty: {shifty_value}, sat: {sat_value}")
+                    return expose_value, hue_value, scale_value, shiftx_value, shifty_value, sat_value
                     
-                    else:
-                        return None
-            except:
-                return None
+                else:
+                    session["effects"] = False
+                    expose_value = None
+                    hue_value = None
+                    scale_value = None
+                    shiftx_value = None
+                    shifty_value = None
+                    sat_value = None
+                    return expose_value, hue_value, scale_value, shiftx_value, shifty_value, sat_value
+            
+            except Exception as e:
+                print(e)
+                
                     

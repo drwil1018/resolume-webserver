@@ -40,13 +40,13 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Exposure slider
-    const slider = document.getElementById('exposure');
-    const display = document.getElementById('exposureValue');
+    const exposureslider = document.getElementById('exposure');
+    const exposuredisplay = document.getElementById('exposureValue');
     
-    if (slider && display) {
-        slider.addEventListener('input', async (e) => {
+    if (exposureslider && exposuredisplay) {
+        exposureslider.addEventListener('input', async (e) => {
             const value = e.target.value;
-            display.textContent = value;
+            exposuredisplay.textContent = value;
 
             try {
                 const response = await fetch('/update_exposure', {
@@ -65,6 +65,141 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    // Hue slider
+    const hueslider = document.getElementById('hue');
+    const huedisplay = document.getElementById('hueValue');
+    
+    if (hueslider && huedisplay) {
+        hueslider.addEventListener('input', async (e) => {
+            const value = e.target.value;
+            huedisplay.textContent = value;
+
+            try {
+                const response = await fetch('/update_hue', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ value: value })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to set effect');
+                }
+            } catch (error) {
+                console.error('Error', error);
+            }
+        });
+    }
+
+    // Saturation slider
+    const satslider = document.getElementById('sat');
+    const satdisplay = document.getElementById('satValue');
+    
+    if (satslider && satdisplay) {
+        satslider.addEventListener('input', async (e) => {
+            const value = e.target.value;
+            satdisplay.textContent = value;
+
+            try {
+                const response = await fetch('/update_sat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ value: value })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to set effect');
+                }
+            } catch (error) {
+                console.error('Error', error);
+            }
+        });
+    }
+
+        // Scale slider
+        const scaleslider = document.getElementById('scale');
+        const scaledisplay = document.getElementById('scaleValue');
+        
+        if (scaleslider && scaledisplay) {
+            scaleslider.addEventListener('input', async (e) => {
+                const value = e.target.value;
+                scaledisplay.textContent = value;
+    
+                try {
+                    const response = await fetch('/update_scale', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ value: value })
+                    });
+    
+                    if (!response.ok) {
+                        throw new Error('Failed to set effect');
+                    }
+                } catch (error) {
+                    console.error('Error', error);
+                }
+            });
+        }
+
+        // Shift X slider
+        const shiftxslider = document.getElementById('shiftx');
+        const shiftxdisplay = document.getElementById('shiftxValue');
+        
+        if (shiftxslider && shiftxdisplay) {
+            shiftxslider.addEventListener('input', async (e) => {
+                const value = e.target.value;
+                shiftxdisplay.textContent = value;
+    
+                try {
+                    const response = await fetch('/update_shiftx', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ value: value })
+                    });
+    
+                    if (!response.ok) {
+                        throw new Error('Failed to set effect');
+                    }
+                } catch (error) {
+                    console.error('Error', error);
+                }
+            });
+        }
+
+        // Shift Y slider
+        const shiftyslider = document.getElementById('shifty');
+        const shiftydisplay = document.getElementById('shiftyValue');
+        
+        if (shiftyslider && shiftydisplay) {
+            shiftyslider.addEventListener('input', async (e) => {
+                const value = e.target.value;
+                shiftydisplay.textContent = value;
+    
+                try {
+                    const response = await fetch('/update_shifty', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ value: value })
+                    });
+    
+                    if (!response.ok) {
+                        throw new Error('Failed to set effect');
+                    }
+                } catch (error) {
+                    console.error('Error', error);
+                }
+            });
+        }
 
     // Upload message
     document.getElementById('file').addEventListener('change', function(e) {

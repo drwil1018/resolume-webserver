@@ -1,0 +1,767 @@
+{
+    "audio": null,
+    "beatsnap": {
+      "id": 1738775641014,
+      "index": 1,
+      "options": [
+        "Composition Determined",
+        "None",
+        "8 Bars",
+        "4 Bars",
+        "2 Bars",
+        "1 Bar",
+        "1/2 Bar",
+        "1/4 Bar"
+      ],
+      "value": "None",
+      "valuetype": "ParamChoice"
+    },
+    "colorid": {
+      "id": 1738775641059,
+      "index": 0,
+      "options": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "value": "1",
+      "valuetype": "ParamChoice"
+    },
+    "connected": {
+      "id": 1738775641061,
+      "index": 4,
+      "options": [
+        "Empty",
+        "Disconnected",
+        "Previewing",
+        "Connected",
+        "Connected \u0026 previewing"
+      ],
+      "value": "Connected \u0026 previewing",
+      "valuetype": "ParamState"
+    },
+    "dashboard": {
+      "Link 1": {
+        "id": 1738775640942,
+        "in": 0.0,
+        "max": 1.0,
+        "min": 0.0,
+        "out": 1.0,
+        "value": 0.0,
+        "valuetype": "ParamRange",
+        "view": {
+          "control_type": "rotary",
+          "suffix": ""
+        }
+      },
+      "Link 2": {
+        "id": 1738775640944,
+        "in": 0.0,
+        "max": 1.0,
+        "min": 0.0,
+        "out": 1.0,
+        "value": 0.0,
+        "valuetype": "ParamRange",
+        "view": {
+          "control_type": "rotary",
+          "suffix": ""
+        }
+      },
+      "Link 3": {
+        "id": 1738775640945,
+        "in": 0.0,
+        "max": 1.0,
+        "min": 0.0,
+        "out": 1.0,
+        "value": 0.0,
+        "valuetype": "ParamRange",
+        "view": {
+          "control_type": "rotary",
+          "suffix": ""
+        }
+      },
+      "Link 4": {
+        "id": 1738775640948,
+        "in": 0.0,
+        "max": 1.0,
+        "min": 0.0,
+        "out": 1.0,
+        "value": 0.0,
+        "valuetype": "ParamRange",
+        "view": {
+          "control_type": "rotary",
+          "suffix": ""
+        }
+      },
+      "Link 5": {
+        "id": 1738775640951,
+        "in": 0.0,
+        "max": 1.0,
+        "min": 0.0,
+        "out": 1.0,
+        "value": 0.0,
+        "valuetype": "ParamRange",
+        "view": {
+          "control_type": "rotary",
+          "suffix": ""
+        }
+      },
+      "Link 6": {
+        "id": 1738775640952,
+        "in": 0.0,
+        "max": 1.0,
+        "min": 0.0,
+        "out": 1.0,
+        "value": 0.0,
+        "valuetype": "ParamRange",
+        "view": {
+          "control_type": "rotary",
+          "suffix": ""
+        }
+      },
+      "Link 7": {
+        "id": 1738775640957,
+        "in": 0.0,
+        "max": 1.0,
+        "min": 0.0,
+        "out": 1.0,
+        "value": 0.0,
+        "valuetype": "ParamRange",
+        "view": {
+          "control_type": "rotary",
+          "suffix": ""
+        }
+      },
+      "Link 8": {
+        "id": 1738775640963,
+        "in": 0.0,
+        "max": 1.0,
+        "min": 0.0,
+        "out": 1.0,
+        "value": 0.0,
+        "valuetype": "ParamRange",
+        "view": {
+          "control_type": "rotary",
+          "suffix": ""
+        }
+      }
+    },
+    "faderstart": {
+      "id": 1738775641040,
+      "index": 0,
+      "options": [
+        "Layer Determined",
+        "On",
+        "Off"
+      ],
+      "value": "Layer Determined",
+      "valuetype": "ParamChoice"
+    },
+    "id": 1621342720041,
+    "ignorecolumntrigger": {
+      "id": 1738775641035,
+      "index": 0,
+      "options": [
+        "Layer Determined",
+        "On",
+        "Off"
+      ],
+      "value": "Layer Determined",
+      "valuetype": "ParamChoice"
+    },
+    "name": {
+      "id": 1738775641052,
+      "value": "Trinity",
+      "valuetype": "ParamString"
+    },
+    "selected": {
+      "id": 1738775641075,
+      "value": true,
+      "valuetype": "ParamTrigger"
+    },
+    "target": {
+      "id": 1738775641025,
+      "index": 0,
+      "options": [
+        "Composition Determined",
+        "Active Layer",
+        "Own Layer",
+        "Free Layer",
+        "Denon Player Determined",
+        "Pioneer Player Determined"
+      ],
+      "value": "Composition Determined",
+      "valuetype": "ParamChoice"
+    },
+    "thumbnail": {
+      "id": 1621342720041,
+      "is_default": false,
+      "last_update": "1738775656513006",
+      "path": "/api/v1/composition/clips/by-id/1621342720041/thumbnail",
+      "size": 14816
+    },
+    "transport": {
+      "controls": {
+        "duration": {
+          "id": 1738775645501,
+          "in": 0.001,
+          "max": 604800.0,
+          "min": 0.001,
+          "out": 604800.0,
+          "value": 8.0,
+          "valuetype": "ParamRange"
+        },
+        "playdirection": {
+          "id": 1738775645493,
+          "index": 2,
+          "options": [
+            "\u003c",
+            "||",
+            "\u003e"
+          ],
+          "value": "\u003e",
+          "valuetype": "ParamChoice"
+        },
+        "playmode": {
+          "id": 1738775645494,
+          "index": 0,
+          "options": [
+            "Loop",
+            "Bounce",
+            "Random",
+            "Play Once \u0026 Clear",
+            "Play Once \u0026 Hold"
+          ],
+          "value": "Loop",
+          "valuetype": "ParamChoice"
+        },
+        "playmodeaway": {
+          "id": 1738775645495,
+          "index": 0,
+          "options": [
+            "Restart",
+            "Continue",
+            "Relative"
+          ],
+          "value": "Restart",
+          "valuetype": "ParamChoice"
+        },
+        "speed": {
+          "id": 1738775645497,
+          "in": 0.0,
+          "max": 10.0,
+          "min": 0.0,
+          "out": 10.0,
+          "value": 1.0,
+          "valuetype": "ParamRange"
+        }
+      },
+      "position": {
+        "id": 1738775645467,
+        "in": 0.0,
+        "max": 8000.000000000001,
+        "min": 0.0,
+        "out": 8000.000000000001,
+        "value": 2771.1812499982216,
+        "valuetype": "ParamRange"
+      }
+    },
+    "transporttype": {
+      "id": 1738775641017,
+      "index": 0,
+      "options": [
+        "Timeline",
+        "BPM Sync",
+        "SMPTE 1",
+        "SMPTE 2",
+        "Denon DJ",
+        "Pioneer DJ"
+      ],
+      "value": "Timeline",
+      "valuetype": "ParamChoice"
+    },
+    "triggerstyle": {
+      "id": 1738775641030,
+      "index": 0,
+      "options": [
+        "Composition Determined",
+        "Normal",
+        "Piano",
+        "Toggle"
+      ],
+      "value": "Composition Determined",
+      "valuetype": "ParamChoice"
+    },
+    "video": {
+      "a": {
+        "id": 1738775644993,
+        "value": true,
+        "valuetype": "ParamBoolean"
+      },
+      "b": {
+        "id": 1738775644992,
+        "value": true,
+        "valuetype": "ParamBoolean"
+      },
+      "description": "Trinity_09.mov\nDXV 3.0 Normal Quality, With Alpha, 1280x720, 30.00 Fps\n00:00:08.000",
+      "effects": [
+        {
+          "display_name": "Transform",
+          "id": 1621342720045,
+          "mixer": null,
+          "name": "Transform",
+          "params": {
+            "Anchor X": {
+              "id": 1738775645100,
+              "in": -8192.0,
+              "max": 8192.0,
+              "min": -8192.0,
+              "out": 8192.0,
+              "value": 0.0,
+              "valuetype": "ParamRange",
+              "view": {
+                "control_type": "slider",
+                "step": 1.0,
+                "suffix": ""
+              }
+            },
+            "Anchor Y": {
+              "id": 1738775645105,
+              "in": -8192.0,
+              "max": 8192.0,
+              "min": -8192.0,
+              "out": 8192.0,
+              "value": 0.0,
+              "valuetype": "ParamRange",
+              "view": {
+                "control_type": "slider",
+                "step": 1.0,
+                "suffix": ""
+              }
+            },
+            "Anchor Z": {
+              "id": 1738775645106,
+              "in": -8192.0,
+              "max": 8192.0,
+              "min": -8192.0,
+              "out": 8192.0,
+              "value": 0.0,
+              "valuetype": "ParamRange",
+              "view": {
+                "control_type": "slider",
+                "step": 1.0,
+                "suffix": ""
+              }
+            },
+            "Position X": {
+              "id": 1738775645089,
+              "in": -16384.0,
+              "max": 16384.0,
+              "min": -16384.0,
+              "out": 16384.0,
+              "value": 0.0,
+              "valuetype": "ParamRange",
+              "view": {
+                "control_type": "spinner",
+                "display_units": "real",
+                "step": 1.0,
+                "suffix": ""
+              }
+            },
+            "Position Y": {
+              "id": 1738775645092,
+              "in": -16384.0,
+              "max": 16384.0,
+              "min": -16384.0,
+              "out": 16384.0,
+              "value": 0.0,
+              "valuetype": "ParamRange",
+              "view": {
+                "control_type": "spinner",
+                "display_units": "real",
+                "step": 1.0,
+                "suffix": ""
+              }
+            },
+            "Rotation X": {
+              "id": 1738775645094,
+              "in": -180.0,
+              "max": 180.0,
+              "min": -180.0,
+              "out": 180.0,
+              "value": 0.0,
+              "valuetype": "ParamRange",
+              "view": {
+                "control_type": "slider",
+                "display_units": "degrees",
+                "step": 1.0,
+                "suffix": " \u00b0"
+              }
+            },
+            "Rotation Y": {
+              "id": 1738775645096,
+              "in": -180.0,
+              "max": 180.0,
+              "min": -180.0,
+              "out": 180.0,
+              "value": 0.0,
+              "valuetype": "ParamRange",
+              "view": {
+                "control_type": "slider",
+                "display_units": "degrees",
+                "step": 1.0,
+                "suffix": " \u00b0"
+              }
+            },
+            "Rotation Z": {
+              "id": 1738775645098,
+              "in": -180.0,
+              "max": 180.0,
+              "min": -180.0,
+              "out": 180.0,
+              "value": 0.0,
+              "valuetype": "ParamRange",
+              "view": {
+                "control_type": "slider",
+                "display_units": "degrees",
+                "step": 1.0,
+                "suffix": " \u00b0"
+              }
+            },
+            "Scale": {
+              "id": 1738775645086,
+              "in": 0.0,
+              "max": 1000.0,
+              "min": 0.0,
+              "out": 1000.0,
+              "value": 100.0,
+              "valuetype": "ParamRange",
+              "view": {
+                "control_type": "slider",
+                "display_units": "percent",
+                "multiplier": 1.0,
+                "step": 1.0,
+                "suffix": " %"
+              }
+            },
+            "Scale H": {
+              "id": 1738775645088,
+              "in": 0.0,
+              "max": 1000.0,
+              "min": 0.0,
+              "out": 1000.0,
+              "value": 100.0,
+              "valuetype": "ParamRange",
+              "view": {
+                "control_type": "slider",
+                "display_units": "percent",
+                "multiplier": 1.0,
+                "step": 1.0,
+                "suffix": " %"
+              }
+            },
+            "Scale W": {
+              "id": 1738775645087,
+              "in": 0.0,
+              "max": 1000.0,
+              "min": 0.0,
+              "out": 1000.0,
+              "value": 100.0,
+              "valuetype": "ParamRange",
+              "view": {
+                "control_type": "slider",
+                "display_units": "percent",
+                "multiplier": 1.0,
+                "step": 1.0,
+                "suffix": " %"
+              }
+            }
+          }
+        },
+        {
+          "bypassed": {
+            "id": 1738775647071,
+            "value": false,
+            "valuetype": "ParamBoolean"
+          },
+          "display_name": "Exposure",
+          "id": 1738775647072,
+          "mixer": {
+            "Blend Mode": {
+              "id": 1738775647075,
+              "index": 1,
+              "options": [
+                "Add",
+                "Alpha",
+                "B\u0026W",
+                "Burn",
+                "Cube",
+                "Cut",
+                "Darken",
+                "Difference",
+                "Difference I",
+                "Displace",
+                "Dissolve",
+                "Dodge",
+                "Exclusion",
+                "Hard Light",
+                "JitterBug",
+                "Lighten",
+                "LoRez",
+                "Luma Is Alpha",
+                "Luma Key",
+                "Luma Key I",
+                "Meta Mix",
+                "Multiply",
+                "Multi Task",
+                "Noisy",
+                "Overlay",
+                "Parts",
+                "PiP",
+                "Push Down",
+                "Push Left",
+                "Push Right",
+                "Push Up",
+                "RGB",
+                "Rotate X",
+                "Rotate Y",
+                "Screen",
+                "Shift RGB",
+                "Side by Side",
+                "Soft Light",
+                "Static",
+                "Subtract",
+                "Tile",
+                "TimeSwitcher",
+                "to Black",
+                "to Color",
+                "to White",
+                "Twitch",
+                "Video Bumper",
+                "Wipe Ellipse",
+                "Zoom In",
+                "Zoom Out"
+              ],
+              "value": "Alpha",
+              "valuetype": "ParamChoice",
+              "view": {
+                "control_type": "choice_combobox",
+                "suffix": ""
+              }
+            }
+          },
+          "name": "Exposure",
+          "params": {
+            "Exposure": {
+              "id": 1738775647070,
+              "in": 0.0,
+              "max": 1.0,
+              "min": 0.0,
+              "out": 1.0,
+              "value": 0.5,
+              "valuetype": "ParamRange"
+            },
+            "Opacity": {
+              "id": 1738775647074,
+              "in": 0.0,
+              "max": 1.0,
+              "min": 0.0,
+              "out": 1.0,
+              "value": 1.0,
+              "valuetype": "ParamRange",
+              "view": {
+                "control_type": "slider_color_opacity",
+                "display_units": "percent",
+                "multiplier": 100.0,
+                "suffix": " %"
+              }
+            }
+          }
+        },
+        {
+          "bypassed": {
+            "id": 1738775647089,
+            "value": false,
+            "valuetype": "ParamBoolean"
+          },
+          "display_name": "Hue Rotate",
+          "id": 1738775647090,
+          "mixer": {
+            "Blend Mode": {
+              "id": 1738775647093,
+              "index": 1,
+              "options": [
+                "Add",
+                "Alpha",
+                "B\u0026W",
+                "Burn",
+                "Cube",
+                "Cut",
+                "Darken",
+                "Difference",
+                "Difference I",
+                "Displace",
+                "Dissolve",
+                "Dodge",
+                "Exclusion",
+                "Hard Light",
+                "JitterBug",
+                "Lighten",
+                "LoRez",
+                "Luma Is Alpha",
+                "Luma Key",
+                "Luma Key I",
+                "Meta Mix",
+                "Multiply",
+                "Multi Task",
+                "Noisy",
+                "Overlay",
+                "Parts",
+                "PiP",
+                "Push Down",
+                "Push Left",
+                "Push Right",
+                "Push Up",
+                "RGB",
+                "Rotate X",
+                "Rotate Y",
+                "Screen",
+                "Shift RGB",
+                "Side by Side",
+                "Soft Light",
+                "Static",
+                "Subtract",
+                "Tile",
+                "TimeSwitcher",
+                "to Black",
+                "to Color",
+                "to White",
+                "Twitch",
+                "Video Bumper",
+                "Wipe Ellipse",
+                "Zoom In",
+                "Zoom Out"
+              ],
+              "value": "Alpha",
+              "valuetype": "ParamChoice",
+              "view": {
+                "control_type": "choice_combobox",
+                "suffix": ""
+              }
+            }
+          },
+          "name": "HueRotate",
+          "params": {
+            "Hue Rotate": {
+              "id": 1738775647087,
+              "in": 0.0,
+              "max": 1.0,
+              "min": 0.0,
+              "out": 1.0,
+              "value": 0.0,
+              "valuetype": "ParamRange"
+            },
+            "Hue Scale": {
+              "id": 1738775647086,
+              "in": 0.0,
+              "max": 1.0,
+              "min": 0.0,
+              "out": 1.0,
+              "value": 1.0,
+              "valuetype": "ParamRange"
+            },
+            "Opacity": {
+              "id": 1738775647092,
+              "in": 0.0,
+              "max": 1.0,
+              "min": 0.0,
+              "out": 1.0,
+              "value": 1.0,
+              "valuetype": "ParamRange",
+              "view": {
+                "control_type": "slider_color_opacity",
+                "display_units": "percent",
+                "multiplier": 100.0,
+                "suffix": " %"
+              }
+            },
+            "Sat. Scale": {
+              "id": 1738775647088,
+              "in": 0.0,
+              "max": 1.0,
+              "min": 0.0,
+              "out": 1.0,
+              "value": 0.5,
+              "valuetype": "ParamRange"
+            }
+          }
+        }
+      ],
+      "fileinfo": {
+        "duration": "00:00:08.00",
+        "duration_ms": 8000.000000000001,
+        "exists": true,
+        "framerate": {
+          "denom": 1,
+          "num": 30
+        },
+        "height": 720,
+        "path": "/Applications/Resolume Arena/media/Shop74/Trinity_09.mov",
+        "width": 1280
+      },
+      "g": {
+        "id": 1738775644991,
+        "value": true,
+        "valuetype": "ParamBoolean"
+      },
+      "height": {
+        "id": 1738775644960,
+        "in": 0.0,
+        "max": 16384.0,
+        "min": 0.0,
+        "out": 16384.0,
+        "value": 720.0,
+        "valuetype": "ParamRange"
+      },
+      "mixer": null,
+      "opacity": {
+        "id": 1738775644957,
+        "in": 0.0,
+        "max": 1.0,
+        "min": 0.0,
+        "out": 1.0,
+        "value": 1.0,
+        "valuetype": "ParamRange"
+      },
+      "r": {
+        "id": 1738775644989,
+        "value": true,
+        "valuetype": "ParamBoolean"
+      },
+      "resize": {
+        "id": 1738775644988,
+        "index": 3,
+        "options": [
+          "Fill",
+          "Fit",
+          "Stretch",
+          "Original"
+        ],
+        "value": "Original",
+        "valuetype": "ParamChoice"
+      },
+      "sourceparams": null,
+      "width": {
+        "id": 1738775644958,
+        "in": 0.0,
+        "max": 16384.0,
+        "min": 0.0,
+        "out": 16384.0,
+        "value": 1280.0,
+        "valuetype": "ParamRange"
+      }
+    }
+  }

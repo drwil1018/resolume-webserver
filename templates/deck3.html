@@ -21,9 +21,14 @@
     </div>
     
     <div class="button-container">
-        <button class="button" onclick="window.location.href='{{ url_for('add_effect') }}'">Edit Exposure</button>
-        <button class="button" onclick="window.location.href='{{ url_for('remove_effects') }}'">Default</button>
+        <button class="button" onclick="window.location.href='{{ url_for('edit') }}'">Edit Exposure</button>
+        <button class="button" onclick="window.location.href='{{ url_for('default_effects_deck') }}'">Default</button>
         <button class="button" onclick="window.location.href='{{ url_for('clear_all') }}'">Delete All Clips</button>
+        {% if session.get("sides_on") == False %}
+            <button class="button" onclick="window.location.href='{{ url_for('select_sides') }}'">Side Screens</button>
+        {% else %}
+            <button class="button" onclick="window.location.href='{{ url_for('select_center') }}'">Center Screen</button>
+        {% endif %}
     </div>
 
     {% if session.get("show_slider") %}
