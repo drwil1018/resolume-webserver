@@ -12,23 +12,31 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Thumbnail selection
-    const currrentDeck = window.location.pathname.split('/').pop();
-    storedDeck = sessionStorage.getItem('currentDeck');
-    if (storedDeck && storedDeck !== currrentDeck) {
-        sessionStorage.removeItem('selectedClipIndex');
-    }
-    sessionStorage.setItem('currentDeck', currrentDeck);
+    // Handle initial and click selection
     let selectedThumbnail = null;
-    const storedIndex = sessionStorage.getItem('selectedClipIndex');
+    const currentPath = window.location.pathname;
+    const storedPath = sessionStorage.getItem('currentPath');
     
-    if (storedIndex) {
-        const imgs = document.querySelectorAll('.thumbnail-grid img');
-        selectedThumbnail = imgs[storedIndex - 1];
-        selectedThumbnail.classList.add('selected');
+    // Clear selection if path changed (switching screens)
+    if (storedPath !== currentPath) {
+        sessionStorage.removeItem('selectedClipIndex');
+        sessionStorage.setItem('currentPath', currentPath);
+    } else {
+        const storedIndex = sessionStorage.getItem('selectedClipIndex');
+        const initialSelection = document.getElementById('selection-index')?.value;
+        const selectionIndex = storedIndex || initialSelection;
+        
+        if (selectionIndex) {
+            const imgs = document.querySelectorAll('.thumbnail-grid img');
+            if (imgs[selectionIndex - 1]) {
+                selectedThumbnail = imgs[selectionIndex - 1];
+                selectedThumbnail.classList.add('selected');
+            }
+        }
     }
 
-    document.querySelectorAll(".thumbnail-grid img").forEach((img, index) => {
+    // Update click handling
+    document.querySelectorAll('.thumbnail-grid img').forEach((img, index) => {
         img.addEventListener('click', function() {
             if (selectedThumbnail) {
                 selectedThumbnail.classList.remove('selected');
@@ -201,6 +209,50 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
 
+// Add right-click handler for sliders
+    document.querySelectorAll('input[type="range"]').forEach(slider => {
+        slider.addEventListener('contextmenu', async function(e) {
+            e.preventDefault();
+            const sliderId = this.id;
+            const defaultValue = getDefaultValue(sliderId);
+            
+            try {
+                const response = await fetch(`/reset_effect/${sliderId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ value: defaultValue })
+                });
+                
+                if (response.ok) {
+                    this.value = defaultValue;
+                    document.getElementById(`${sliderId}Value`).textContent = defaultValue;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+    });
+
+    function getDefaultValue(sliderId) {
+        switch(sliderId) {
+            case 'exposure':
+                return 0.5;
+            case 'hue':
+                return 0;
+            case 'sat':
+                return 0.5;
+            case 'scale':
+                return 100;
+            case 'shiftx':
+            case 'shifty':
+                return 0;
+            default:
+                return 0;
+        }
+    }
+
     // Upload message
     document.getElementById('file').addEventListener('change', function(e) {
         const status = document.getElementById('uploadStatus');
@@ -212,4 +264,62 @@ document.addEventListener('DOMContentLoaded', function() {
             status.classList.remove('visible');
         }
     });
+
+    // Rename titles
+    document.querySelectorAll('.title-container').forEach(container => {
+        container.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+        });
+    });
+
+    window.editTitle = function(e, index) {
+        e.preventDefault();
+        e.stopPropagation();
+        const editForm = document.getElementById(`edit-${index}`);
+        const input = document.getElementById(`input-${index}`);
+        const titleLabel = document.querySelector(`#edit-${index}`).previousElementSibling;
+        
+        if (editForm) {
+            titleLabel.style.display = 'none';
+            editForm.style.display = 'block';
+            input.focus();
+            input.select();
+
+            input.addEventListener('keypress', async function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    await saveTitle(e, index);
+                }
+            });
+        }
+    };
+
+    window.saveTitle = async function(e, index) {
+        e.preventDefault();
+        e.stopPropagation();
+        const input = document.getElementById(`input-${index}`);
+        const newTitle = input.value;
+        
+        try {
+            const response = await fetch(`/update_title/${index}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ title: newTitle })
+            });
+            
+            if (response.ok) {
+                const titleLabel = document.querySelector(`#edit-${index}`).previousElementSibling;
+                titleLabel.textContent = newTitle;
+                titleLabel.style.display = 'block';
+                document.getElementById(`edit-${index}`).style.display = 'none';
+                window.location.reload();
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
 });
+

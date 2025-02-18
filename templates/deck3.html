@@ -10,14 +10,20 @@
         {% endif %}
     {% endwith %}
 
-
-    <div class="thumbnail-grid">
-        {% for thumbnail, title in zip(thumbnails, titles) %}
-            <a href="{{ url_for('select_clip', clip_index=loop.index) }}">
-                <img src="data:image/jpeg;base64,{{ thumbnail }}" alt="File {{ title }}">
-                <span class ="thumbnail-label">{{ title }}</span>
-            </a>
-        {% endfor %}
+    <div class="grid-wrapper">
+        <div class="thumbnail-grid">
+            {% for thumbnail, title in zip(thumbnails, titles) %}
+                <a href="{{ url_for('select_clip', clip_index=loop.index) }}">
+                    <img src="data:image/jpeg;base64,{{ thumbnail }}" alt="File {{ loop.index }}" class="{% if loop.index == selection_index %}selected{% endif %}">
+                    <div class="title-container">
+                        <span class ="thumbnail-label" onclick="editTitle(event, {{ loop.index }})">{{ title }}</span>
+                        <div class="edit-form" id="edit-{{ loop.index }}" style="display: none;">
+                            <input type="text" value="{{ title }}" id="input-{{ loop.index }}" onfocus="this.select()" onclick="this.select()" class="edit-input">
+                        </div>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
     </div>
     
     <div class="button-container">
@@ -30,16 +36,6 @@
             <button class="button" onclick="window.location.href='{{ url_for('select_center') }}'">Center Screen</button>
         {% endif %}
     </div>
-
-    {% if session.get("show_slider") %}
-        <div class="slider-container">
-            <form id="effectForm">
-                <label for="exposure">Exposure</label>
-                <input type="range" id="exposure" name="exposure" min="0" max="1" step="0.01" value="0.5">
-                <span id="exposureValue">0.5</span>
-            </form>
-        </div>
-    {% endif %}
 
     <div class="upload-container">
         <form action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data">

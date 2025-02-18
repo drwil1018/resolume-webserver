@@ -215,4 +215,36 @@ a:hover {
     color: #4e472f;
     text-align: center;
     font-size: 15px;
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.1s ease;
+}
+
+.thumbnail-label:hover {
+    color: #d8e9da;
+}
+
+.title-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.edit-form input {
+    padding: 2px 5px;
+    margin-right: 5px;
+    user-select: all;
+    -webkit-user-select: all;
+    -moz-user-select: all;
+    -ms-user-select: all;
+}
+
+.edit-input {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    user-select: all;
+    -webkit-user-select: all;
+    cursor: text;
 }

@@ -3,7 +3,7 @@ import requests
 import logging
 from werkzeug.utils import secure_filename
 import os
-from utils import select_deck, check_effects
+from utils import select_deck, check_effects, store_effects, apply_effects, store_effects_index
 from time import sleep
 
 
@@ -34,14 +34,21 @@ def home():
 
 @app.route("/deck1")
 def deck1():
+    session['exposure_page'] = False
+    session['color_page'] = False
+    session['transform_page'] = False
     session['current_deck'] = "deck1"
     select = requests.post(f"{base_url}/composition/decks/1/select")
     session['layer_index'] = 1
     layer_index = session.get("layer_index")
     sleep(0.3)
+
+    effect_values = store_effects(base_url)
+    session["effect_values_cancel"] = effect_values
+    
     if session.get("sides_on") is not True:
         try:
-            update, update2, thumbnails, total_clips, titles = select_deck(layer_index, base_url)
+            update, update2, thumbnails, total_clips, titles, selection_index = select_deck(layer_index, base_url)
             session["total_clips"] = total_clips
             
             if select.status_code != 204:
@@ -58,7 +65,7 @@ def deck1():
                 return render_template(f"{deck}.html")
             
             deck = session.get("current_deck")
-            return render_template(f"{deck}.html", thumbnails=thumbnails, titles=titles, zip=zip)
+            return render_template(f"{deck}.html", thumbnails=thumbnails, titles=titles, selection_index=selection_index, zip=zip)
         
     
         except requests.RequestException as e:
@@ -71,85 +78,96 @@ def deck1():
 
 @app.route("/deck2")
 def deck2():
+    session['exposure_page'] = False
+    session['color_page'] = False
+    session['transform_page'] = False
     session['current_deck'] = "deck2"
     select = requests.post(f"{base_url}/composition/decks/2/select")
-    sleep(0.3)
     session['layer_index'] = 1
     layer_index = session.get("layer_index")
-    try:
-        update, update2, thumbnails, total_clips, titles = select_deck(layer_index, base_url)
-        session["total_clips"] = total_clips
-        expose_value = check_effects(base_url)
-        if expose_value is not None:
-            session["show_slider"] = True
-        else:
-            session.pop("show_slider", None)
+    sleep(0.3)
 
-        
-        if select.status_code != 204:
-            flash(f'Error: {select.status_code}', 'error, could not select deck')
+    effect_values = store_effects(base_url)
+    session["effect_values_cancel"] = effect_values
+
+    if session.get("sides_on") is not True:
+        try:
+            update, update2, thumbnails, total_clips, titles, selection_index = select_deck(layer_index, base_url)
+            session["total_clips"] = total_clips
+            
+            if select.status_code != 204:
+                flash(f'Error: {select.status_code}', 'error, could not select deck')
+                deck = session.get("current_deck")
+                return render_template(f"{deck}.html")
+            elif update.status_code != 204:
+                flash(f'Error: {update.status_code}', 'error, could not update layer data')
+                deck = session.get("current_deck")
+                return render_template(f"{deck}.html")
+            elif update2.status_code != 204:
+                flash(f'Error: {update.status_code}', 'error, could not update layer data')
+                deck = session.get("current_deck")
+                return render_template(f"{deck}.html")
+            
             deck = session.get("current_deck")
-            return render_template(f"{deck}.html")
-        elif update.status_code != 204:
-            flash(f'Error: {update.status_code}', 'error, could not update layer data')
-            deck = session.get("current_deck")
-            return render_template(f"{deck}.html")
-        elif update2.status_code != 204:
-            flash(f'Error: {update.status_code}', 'error, could not update layer data')
-            deck = session.get("current_deck")
-            return render_template(f"{deck}.html")
-        
-        deck = session.get("current_deck")
-        return render_template(f"{deck}.html", thumbnails=thumbnails, expose_value=expose_value, titles=titles, zip=zip)
+            return render_template(f"{deck}.html", thumbnails=thumbnails, titles=titles, selection_index=selection_index, zip=zip)
         
     
-    except requests.RequestException as e:
-        flash(f'Connection error: {str(e)}', 'error')
+        except requests.RequestException as e:
+            flash(f'Connection error: {str(e)}', 'error')
+            deck = session.get("current_deck")
+            return render_template(f"{deck}.html")
+    else:
         deck = session.get("current_deck")
-        return render_template(f"{deck}.html")
+        return redirect(url_for("select_sides"))
     
 @app.route("/deck3")
 def deck3():
+    session['exposure_page'] = False
+    session['color_page'] = False
+    session['transform_page'] = False
     session['current_deck'] = "deck3"
     select = requests.post(f"{base_url}/composition/decks/3/select")
-    sleep(0.3)
     session['layer_index'] = 1
     layer_index = session.get("layer_index")
-    try:
-        update, update2, thumbnails, total_clips, titles = select_deck(layer_index, base_url)
-        session["total_clips"] = total_clips
-        expose_value = check_effects(base_url)
-        if expose_value is not None:
-            session["show_slider"] = True
-        else:
-            session.pop("show_slider", None)
+    sleep(0.3)
 
-        if select.status_code != 204:
-            flash(f'Error: {select.status_code}', 'error, could not select deck')
+    effect_values = store_effects(base_url)
+    session["effect_values_cancel"] = effect_values
+
+    if session.get("sides_on") is not True:
+        try:
+            update, update2, thumbnails, total_clips, titles, selection_index = select_deck(layer_index, base_url)
+            session["total_clips"] = total_clips
+            
+            if select.status_code != 204:
+                flash(f'Error: {select.status_code}', 'error, could not select deck')
+                deck = session.get("current_deck")
+                return render_template(f"{deck}.html")
+            elif update.status_code != 204:
+                flash(f'Error: {update.status_code}', 'error, could not update layer data')
+                deck = session.get("current_deck")
+                return render_template(f"{deck}.html")
+            elif update2.status_code != 204:
+                flash(f'Error: {update.status_code}', 'error, could not update layer data')
+                deck = session.get("current_deck")
+                return render_template(f"{deck}.html")
+            
             deck = session.get("current_deck")
-            return render_template(f"{deck}.html")
-        elif update.status_code != 204:
-            flash(f'Error: {update.status_code}', 'error, could not update layer data')
-            deck = session.get("current_deck")
-            return render_template(f"{deck}.html")
-        elif update2.status_code != 204:
-            flash(f'Error: {update.status_code}', 'error, could not update layer data')
-            deck = session.get("current_deck")
-            return render_template(f"{deck}.html")
-        
-        deck = session.get("current_deck")
-        return render_template(f"{deck}.html", thumbnails=thumbnails, expose_value=expose_value, titles=titles, zip=zip)
+            return render_template(f"{deck}.html", thumbnails=thumbnails, titles=titles, selection_index=selection_index, zip=zip)
         
     
-    except requests.RequestException as e:
-        flash(f'Connection error: {str(e)}', 'error')
+        except requests.RequestException as e:
+            flash(f'Connection error: {str(e)}', 'error')
+            deck = session.get("current_deck")
+            return render_template(f"{deck}.html")
+    else:
         deck = session.get("current_deck")
-        return render_template(f"{deck}.html")
+        return redirect(url_for("select_sides"))
 
 @app.route("/data")
 def data():
     try:
-        response = requests.get(f"{base_url}/composition/layers/1/clips/{1}")
+        response = requests.get(f"{base_url}/composition/layers/1/clips/1")
         
         if response.status_code != 200:
             flash('Error: Could not complete request', 'error')
@@ -165,6 +183,7 @@ def data():
 @app.route("/select_clip/<int:clip_index>")
 def select_clip(clip_index):
     layer_index = session.get("layer_index")
+    session["clip_index"] = clip_index
     try:
         select = requests.post(f"{base_url}/composition/layers/{layer_index}/clips/{clip_index}/select")
         connect = requests.post(f"{base_url}/composition/layers/{layer_index}/clips/{clip_index}/connect")
@@ -174,7 +193,7 @@ def select_clip(clip_index):
         else:
             current_deck = session.get("current_deck")
             return redirect(url_for(current_deck))
-        
+
     except requests.RequestException as e:
         flash(f'Connection error: {str(e)}', 'error')
         current_deck = session.get("current_deck")
@@ -182,6 +201,8 @@ def select_clip(clip_index):
     
 @app.route("/edit")
 def edit():
+    layer_index = session.get("layer_index")
+    update, update2, thumbnails, total_clips, titles, selection_index = select_deck(layer_index, base_url)
     effects = ["effect:///video/Exposure", "effect:///video/Hue%20Rotate", ]
     expose_value, hue_value, scale_value, shiftx_value, shifty_value, sat_value = check_effects(base_url)
     try:
@@ -192,9 +213,8 @@ def edit():
                 if response.status_code != 204:
                     flash(f'Error: {response.status_code}', 'error, could not add effect')
 
-        print(f"expose: {expose_value}, hue: {hue_value}, scale: {scale_value}, shiftx: {shiftx_value}, shifty: {shifty_value}, sat: {sat_value}")
         current_deck = session.get("current_deck")
-        return render_template("edit.html", expose_value=expose_value, hue_value=hue_value, sat_value=sat_value, scale_value=scale_value, shiftx_value=shiftx_value, shifty_value=shifty_value)
+        return render_template("edit.html", expose_value=expose_value, hue_value=hue_value, sat_value=sat_value, scale_value=scale_value, shiftx_value=shiftx_value, shifty_value=shifty_value, titles=titles, selection_index=selection_index)
     
     except TypeError as e:  
         flash(f'Please select a clip', 'error, please sleect a clip')
@@ -280,127 +300,6 @@ def default_effects_deck():
         flash(f'Connection error: {str(e)}', 'error')
         current_deck = session.get("current_deck")
         return redirect(url_for(current_deck))
-    
-@app.route("/default_effects_edit")
-def default_effects_edit():
-    try:
-        resest_scale = requests.put(
-            f"{base_url}/composition/clips/selected",
-            json={
-                "video": {
-                    "effects": [
-
-                            {
-                                "params": {
-                                    "Scale": {
-                                        "value": 100
-                                    }
-                                }
-                            }
-                    ]
-                }
-            }
-        )
-
-        resest_shiftx = requests.put(
-            f"{base_url}/composition/clips/selected",
-            json={
-                "video": {
-                    "effects": [
-
-                            {
-                                "params": {
-                                    "Position X": {
-                                        "value": 0
-                                    }
-                                }
-                            }
-                    ]
-                }
-            }
-        )
-
-        resest_shifty = requests.put(
-            f"{base_url}/composition/clips/selected",
-            json={
-                "video": {
-                    "effects": [
-
-                            {
-                                "params": {
-                                    "Position Y": {
-                                        "value": 0
-                                    }
-                                }
-                            }
-                    ]
-                }
-            }
-        )
-
-        reset_exposure = requests.put(
-            f"{base_url}/composition/clips/selected",
-            json={
-                "video": {
-                    "effects": [
-                        {},
-                            {
-                                "params": {
-                                    "Exposure": {
-                                        "value": 0.5
-                                    }
-                                }
-                            }
-                    ]
-                }
-            }
-        )
-
-        resest_hue = requests.put(
-            f"{base_url}/composition/clips/selected",
-            json={
-                "video": {
-                    "effects": [
-                        {}, {},
-                            {
-                                "params": {
-                                    "Hue Rotate": {
-                                        "value": 0
-                                    }
-                                }
-                            }
-                    ]
-                }
-            }
-        )
-
-        response = requests.put(
-            f"{base_url}/composition/clips/selected",
-            json={
-                "video": {
-                    "effects": [
-                        {}, {},
-                            {
-                                "params": {
-                                    "Sat. Scale": {
-                                        "value": 0.5
-                                    }
-                                }
-                            }
-                    ]
-                }
-            }
-        )
-
-        if resest_scale.status_code != 204:
-            flash(f'Error: Reset of transform failed', 'error, could not resest transform effects')
-            return redirect(url_for("edit"))
-
-        return redirect(url_for("edit"))
-        
-    except requests.RequestException as e:
-        flash(f'Connection error: {str(e)}', 'error')
-        return redirect(url_for("edit"))
     
 @app.route("/update_exposure", methods=["POST"])
 def update_exposure():
@@ -660,7 +559,7 @@ def select_sides():
     session['sides_on'] = True
     layer_index = session.get("layer_index")
     try:
-        update, update2, thumbnails, total_clips, titles = select_deck(layer_index, base_url)
+        update, update2, thumbnails, total_clips, titles, selection_index = select_deck(layer_index, base_url)
         session["total_clips"] = total_clips
         if update.status_code != 204:
             flash(f'Error: {update.status_code}', 'error, could not update layer data')
@@ -672,7 +571,7 @@ def select_sides():
             return render_template(f"{deck}.html")
         
         deck = session.get("current_deck")
-        return render_template(f"{deck}.html", thumbnails=thumbnails, titles=titles, zip=zip)
+        return render_template(f"{deck}.html", thumbnails=thumbnails, titles=titles, selection_index=selection_index, zip=zip)
         
     
     except requests.RequestException as e:
@@ -682,9 +581,225 @@ def select_sides():
 
 @app.route("/select_center")
 def select_center():
+    layer_index = session['layer_index'] = 1
     session['sides_on'] = False
+    update, update2, thumbnails, total_clips, titles, selection_index = select_deck(layer_index, base_url)
     deck = session.get("current_deck")
-    return redirect(url_for(deck))
+    return render_template(f"{deck}.html", thumbnails=thumbnails, titles=titles, selection_index=selection_index, zip=zip)
+
+@app.route("/update_title/<int:clip_index>", methods=["POST"])
+def update_title(clip_index):
+    try:
+        new_title = request.json.get("title")
+        layer_index = session.get("layer_index")
+        response = requests.put(
+            f"{base_url}/composition/layers/{layer_index}/clips/{clip_index}",
+            json={"name": {"value": new_title}}
+        )
+        
+        if response.status_code != 204:
+            return jsonify({"error": "Failed to update title"}), 400
+        
+        return jsonify({"success": True, "title": new_title}), 200
+    except requests.RequestException as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/exposure_page")
+def exposure_page():
+    session["exposure_page"] = True
+    session["color_page"] = False
+    session["transform_page"] = False
+    return redirect(url_for("edit"))
+
+@app.route("/color_page")
+def color_page():
+    session["color_page"] = True
+    session["exposure_page"] = False
+    session["transform_page"] = False
+    return redirect(url_for("edit"))
+
+@app.route("/transform_page")
+def transform_page():
+    session["transform_page"] = True
+    session["exposure_page"] = False
+    session["color_page"] = False
+    return redirect(url_for("edit"))
+
+@app.route("/delete_clip")
+def delete_clip():
+    layer_index = session.get("layer_index")
+    update, update2, thumbnails, total_clips, titles, selection_index = select_deck(layer_index, base_url)
+    try:
+        response = requests.post(f"{base_url}/composition/clips/selected/clear")
+        while selection_index < total_clips:
+            clip_index = selection_index + 1
+            path_request = requests.get(f"{base_url}/composition/layers/{layer_index}/clips/{clip_index}")
+            effect_values = store_effects_index(base_url, layer_index, clip_index)
+            path = path_request.json().get('video', {}).get('fileinfo', {}).get('path')
+            file_updload = os.path.abspath(path).replace(" ", "%20")
+            resquest = requests.post(f"{base_url}/composition/layers/{layer_index}/clips/{selection_index}/open", data=f"file://{file_updload}")
+            if effect_values is not None:
+                update_exposure, update_hue, update_scale, update_shiftx, update_shifty, update_sat = apply_effects(base_url, layer_index, selection_index, effect_values[0], effect_values[1], effect_values[2], effect_values[3], effect_values[4], effect_values[5])
+
+            if resquest.status_code != 204:
+                flash(f'Error: {resquest.status_code}, could not move clips', 'error, could not open clip')
+                deck = session.get("current_deck")
+                return redirect(url_for(deck))
+            
+            selection_index += 1
+
+        requests.post(f"{base_url}/composition/layers/{layer_index}/clips/{total_clips}/select")
+        sleep(0.1)
+        requests.post(f"{base_url}/composition/clips/selected/clear")
+
+        if response.status_code != 204:
+            flash(f'Error: {response.status_code}', 'error, could not delete clip')
+            deck = session.get("current_deck")
+            return redirect(url_for(deck))
+        
+        deck = session.get("current_deck")
+        return redirect(url_for(deck))
+        
+    except requests.RequestException as e:
+        flash(f'Connection error: {str(e)}', 'error')
+        deck = session.get("current_deck")
+        return redirect(url_for(deck))
+
+@app.route("/cancel_edit")
+def cancel_edit():
+    effect_values = session.get("effect_values_cancel")
+    print(effect_values)
+    if effect_values is not None:
+        update_exposure, update_hue, update_scale, update_shiftx, update_shifty, update_sat = apply_effects(base_url, session.get("layer_index"), session.get("clip_index"), effect_values[0], effect_values[1], effect_values[2], effect_values[3], effect_values[4], effect_values[5])
+    else:
+        default_effects_deck()
+    
+    current_deck = session.get("current_deck")
+    return redirect(url_for(current_deck))
+
+@app.route("/reset_effect/<effect_id>", methods=["POST"])
+def reset_effect(effect_id):
+    try:
+        value = request.json.get("value")
+        layer_index = session.get("layer_index")
+
+        if effect_id == "exposure":
+            response = requests.put(
+                f"{base_url}/composition/clips/selected",
+                json={
+                    "video": {
+                        "effects": [
+                            {},
+                            {
+                                "params": {
+                                    "Exposure": {
+                                        "value": value
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            )
+
+        elif effect_id == "hue":
+            response = requests.put(
+                f"{base_url}/composition/clips/selected",
+                json={
+                    "video": {
+                        "effects": [
+                            {}, {},
+                            {
+                                "params": {
+                                    "Hue Rotate": {
+                                        "value": value
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            )
+
+        elif effect_id == "sat":
+            response = requests.put(
+                f"{base_url}/composition/clips/selected",
+                json={
+                    "video": {
+                        "effects": [
+                            {}, {},
+                            {
+                                "params": {
+                                    "Sat. Scale": {
+                                        "value": value
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            )
+        
+        elif effect_id == "scale":
+            response = requests.put(
+                f"{base_url}/composition/clips/selected",
+                json={
+                    "video": {
+                        "effects": [
+                            {
+                                "params": {
+                                    "Scale": {
+                                        "value": value
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            )
+        
+        elif effect_id == "shiftx":
+            response = requests.put(
+                f"{base_url}/composition/clips/selected",
+                json={
+                    "video": {
+                        "effects": [
+                            {
+                                "params": {
+                                    "Position X": {
+                                        "value": value
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            )
+        
+        elif effect_id == "shifty":
+            response = requests.put(
+                f"{base_url}/composition/clips/selected",
+                json={
+                    "video": {
+                        "effects": [
+                            {
+                                "params": {
+                                    "Position Y": {
+                                        "value": value
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            )
+        
+        if response.status_code != 204:
+            return jsonify({"error": "Failed to reset effect"}), 400
+        return jsonify({"success": True}), 200
+    
+    except requests.RequestException as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
     app.run(
