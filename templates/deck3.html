@@ -16,7 +16,7 @@
                 <a href="{{ url_for('select_clip', clip_index=loop.index) }}">
                     <img src="data:image/jpeg;base64,{{ thumbnail }}" alt="File {{ loop.index }}" class="{% if loop.index == selection_index %}selected{% endif %}">
                     <div class="title-container">
-                        <span class ="thumbnail-label" onclick="editTitle(event, {{ loop.index }})">{{ title }}</span>
+                        <span class ="thumbnail-label" onclick="editTitle(event, {{ loop.index }} )">{{ title }}</span>
                         <div class="edit-form" id="edit-{{ loop.index }}" style="display: none;">
                             <input type="text" value="{{ title }}" id="input-{{ loop.index }}" onfocus="this.select()" onclick="this.select()" class="edit-input">
                         </div>

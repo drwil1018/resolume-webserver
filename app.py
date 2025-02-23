@@ -3,7 +3,7 @@ import requests
 import logging
 from werkzeug.utils import secure_filename
 import os
-from utils import select_deck, check_effects, store_effects, apply_effects, store_effects_index
+from utils import select_deck, check_effects, store_effects, apply_effects, store_effects_index, get_title, set_title
 from time import sleep
 
 
@@ -634,6 +634,7 @@ def delete_clip():
         while selection_index < total_clips:
             clip_index = selection_index + 1
             path_request = requests.get(f"{base_url}/composition/layers/{layer_index}/clips/{clip_index}")
+            title = get_title(base_url, layer_index, clip_index)
             effect_values = store_effects_index(base_url, layer_index, clip_index)
             path = path_request.json().get('video', {}).get('fileinfo', {}).get('path')
             file_updload = os.path.abspath(path).replace(" ", "%20")
@@ -646,6 +647,7 @@ def delete_clip():
                 deck = session.get("current_deck")
                 return redirect(url_for(deck))
             
+            set_title(base_url, layer_index, selection_index, title)
             selection_index += 1
 
         requests.post(f"{base_url}/composition/layers/{layer_index}/clips/{total_clips}/select")

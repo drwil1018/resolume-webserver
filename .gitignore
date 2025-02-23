@@ -177,3 +177,4 @@ pip-cache/
 to_dos.txt
 .DS_Store
 data.json
+uploads/*

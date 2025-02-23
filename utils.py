@@ -230,3 +230,19 @@ def apply_effects(base_url, layer_index, clip_index, expose_value, hue_value, sc
         )
     
     return update_exposure, update_hue, update_scale, update_shiftx, update_shifty, update_sat
+
+def get_title(base_url, layer_index, clip_index):
+    clip_data = requests.get(f"{base_url}/composition/layers/{layer_index}/clips/{clip_index}")
+    title = clip_data.json().get('name', {}).get('value')
+
+    print(title)
+    return title
+
+def set_title(base_url, layer_index, clip_index, title):
+    update_title = requests.put(
+        f"{base_url}/composition/layers/{layer_index}/clips/{clip_index}",
+        json={"name": {"value": title}}
+    )
+
+    return update_title
+
