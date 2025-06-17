@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  # Backend service (Flask)
+  backend:
+    build: ./backend
+    container_name: resolume-backend
+    ports:
+      - "5001:5001"
+    environment:
+      - PORT=5001
+      - FLASK_ENV=production
+    volumes:
+      # Mount the uploads folder for persistence
+      - ./backend/resolume_uploads:/app/resolume_uploads
+    restart: unless-stopped
+    networks:
+      - resolume-network
+
+  # Frontend service (React)
+  frontend:
+    build: ./frontend
+    container_name: resolume-frontend
+    ports:
+      - "80:80"  # Map to standard HTTP port for easy access
+    depends_on:
+      - backend
+    environment:
+      - VITE_API_URL=http://localhost:5001  # Will be replaced during build
+    restart: unless-stopped
+    networks:
+      - resolume-network
+
+networks:
+  resolume-network:
+    driver: bridge
