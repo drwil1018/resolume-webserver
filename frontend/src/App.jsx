@@ -2,16 +2,20 @@ import { useState, useEffect } from "react";
 import DeckSelection from "./DeckSelection";
 import Slider from "./Slider";
 
+// Get API URL from environment variables with fallback
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 function App() {
   const [isEditing, setIsEditing] = useState(false);
-  const [effect, setEffect] = useState("exposure")
+  const [effect, setEffect] = useState("exposure");
+  const [selectedLayer, setSelectedLayer] = useState("1"); // Default to layer 1
   
   useEffect(() => {
     postEditing();
   }, [isEditing]);
 
   async function postEditing() {
-    const response = await fetch('http://localhost:5000/edit_clip', {
+    const response = await fetch(`${API_URL}/edit_clip`, {
       method: 'POST',
       headers: {
           'Content-Type': 'application/json',
@@ -23,7 +27,12 @@ function App() {
   return (
     <>
       <h1>Resolume Webserver</h1>
-      <DeckSelection isEditing={isEditing} setIsEditing={setIsEditing} />
+      <DeckSelection 
+        isEditing={isEditing} 
+        setIsEditing={setIsEditing} 
+        selectedLayer={selectedLayer}
+        setSelectedLayer={setSelectedLayer} 
+      />
       {isEditing ? <Slider isEditing={isEditing} setIsEditing={setIsEditing} effect={effect} setEffect={setEffect} /> : null}
     </>
   );

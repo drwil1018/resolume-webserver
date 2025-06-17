@@ -1,6 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 
-function ThumbnailGrid({ deck, loading, setLoading }) {
+// Get API URL from environment variables with fallback
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
+function ThumbnailGrid({ deck, loading, setLoading, selectedLayer, isDeleting }) {
     const [thumbnails, setThumbnails] = useState([]);
     const [titles, setTitles] = useState([]);
     const [selectedIndex, setSelectedIndex] = useState(null);
@@ -12,13 +15,16 @@ function ThumbnailGrid({ deck, loading, setLoading }) {
     async function fetchThumbnails() {
             setLoading(true);
             try {
-                const response = await fetch(`http://localhost:5000/get_thumbnails?deck=${deck.toString()}`);
+                const response = await fetch(`${API_URL}/get_thumbnails?deck=${deck.toString()}&layer=${selectedLayer}`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                   }
                 const data = await response.json();
                 setThumbnails(data.thumbnails);
                 setTitles(data.titles);
+                if (data.selection_index) {
+                    setSelectedIndex(data.selection_index);
+                }
                 setLoading(false);
             } catch (error) {
                 setError(error.message);
@@ -30,17 +36,26 @@ function ThumbnailGrid({ deck, loading, setLoading }) {
         if (!deck) return;
 
         fetchThumbnails();
-    }, [deck]);
+    }, [deck, selectedLayer, isDeleting]);
 
     useEffect(() => {
-      const response = fetch('http://localhost:5000/get_selected_clip', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({selected: selectedIndex}),
-      })
-    }, [selectedIndex]);
+      const sendSelectedClip = async () => {
+        if (selectedIndex) {
+          await fetch(`${API_URL}/get_selected_clip`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              selected: selectedIndex,
+              layer: selectedLayer
+            }),
+          });
+        }
+      }
+      
+      sendSelectedClip();
+    }, [selectedIndex, selectedLayer]);
 
     function handleThumbnailClick(index) {
         setSelectedIndex(index + 1);
@@ -116,9 +131,10 @@ function ThumbnailGrid({ deck, loading, setLoading }) {
             const formData = new FormData();
             formData.append('file', file);
             formData.append('deck', deck);
+            formData.append('layer', selectedLayer);
             
             try {
-                const response = await fetch('http://localhost:5000/upload_video', {
+                const response = await fetch(`${API_URL}/upload_video`, {
                     method: 'POST',
                     body: formData,
                     // This allows us to track upload progress
@@ -146,10 +162,6 @@ function ThumbnailGrid({ deck, loading, setLoading }) {
         setLoading(false);
     };
 
-    if (loading) return <div>Loading thumbnails...</div>;
-    if (error) return <div>Error loading thumbnails: {error}</div>;
-    if (thumbnails.length === 0) return <div>No thumbnails available</div>;
-
     return (
         <div 
             ref={gridRef}
@@ -169,25 +181,43 @@ function ThumbnailGrid({ deck, loading, setLoading }) {
                 </div>
             )}
             
-            <div className="thumbnail-grid">
-                {thumbnails.map((thumbnail, index) => (
-                  <div key={index} className="thumbnail-img">
-                    <img
-                      src={`data:image/jpeg;base64,${thumbnail}`}
-                      alt={titles[index] || `Clip ${index + 1}`}
-                      className={selectedIndex === index + 1 ? "selected" : ""}
-                      onClick={() => handleThumbnailClick(index)}/>
-                    <div className="thumbnail-label">{titles[index] || `Clip ${index + 1}`}</div>
-                  </div>
-                ))}
-                
-                {/* Upload placeholder/indicator */}
-                {isDragging && (
-                    <div className="upload-indicator">
-                        <div>Drop video files here</div>
-                    </div>
-                )}
-            </div>
+            {loading ? (
+                <div className="empty-state">Loading thumbnails...</div>
+            ) : error ? (
+                <div className="empty-state">Error loading thumbnails: {error}</div>
+            ) : thumbnails.length === 0 ? (
+                <div className="empty-state">
+                    {isDragging ? (
+                        <div className="upload-indicator">Drop video files here</div>
+                    ) : (
+                        <>
+                            <div>No thumbnails available</div>
+                            <div className="drop-hint">Drag and drop videos or images here to add content</div>
+                        </>
+                    )}
+                </div>
+            ) : (
+                <div className="thumbnail-grid">
+                    {thumbnails.map((thumbnail, index) => (
+                        <div key={index} className="thumbnail-img">
+                            <img
+                                src={`data:image/jpeg;base64,${thumbnail}`}
+                                alt={titles[index] || `Clip ${index + 1}`}
+                                className={selectedIndex === index + 1 ? "selected" : ""}
+                                onClick={() => handleThumbnailClick(index)}
+                            />
+                            <div className="thumbnail-label">{titles[index] || `Clip ${index + 1}`}</div>
+                        </div>
+                    ))}
+                    
+                    {/* Upload placeholder/indicator */}
+                    {isDragging && (
+                        <div className="upload-indicator">
+                            <div>Drop video files here</div>
+                        </div>
+                    )}
+                </div>
+            )}
         </div>
     );
 }

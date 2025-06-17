@@ -2,9 +2,13 @@ import React, { useState, useEffect } from 'react';
 import ThumbnailGrid from './ThumbnailGrid';
 import BottomButtons from './BottomButtons';
 
-function DeckSelection({ isEditing, setIsEditing }) {
+// Get API URL from environment variables with fallback
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
+function DeckSelection({ isEditing, setIsEditing, selectedLayer, setSelectedLayer }) {
     const [deck, setDeck] = useState();
     const [loading, setLoading] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     useEffect(() => {
         if (deck) {
@@ -13,7 +17,7 @@ function DeckSelection({ isEditing, setIsEditing }) {
     }, [deck]);
 
     async function postDeck() {
-        const response = await fetch('http://localhost:5000/deck_selection', {
+        const response = await fetch(`${API_URL}/deck_selection`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -24,12 +28,25 @@ function DeckSelection({ isEditing, setIsEditing }) {
 
   return (<>
     <div className="button-container">
-        <button className="button" onClick={() => setDeck(1)}>Deck 1</button>
-        <button className="button" onClick={() => setDeck(2)}>Deck 2</button>
-        <button className="button" onClick={() => setDeck(3)}>Deck 3</button>
+        <button className="button" onClick={() => setDeck(2)}>Halle</button>
+        <button className="button" onClick={() => setDeck(3)}>Deck 2</button>
+        <button className="button" onClick={() => setDeck(4)}>Deck 3</button>
     </div>
-    {deck && <ThumbnailGrid deck={deck} isEditing={isEditing} loading={loading} setLoading={setLoading} />}
-    {deck && <BottomButtons isEditing={isEditing} setIsEditing={setIsEditing} />}
+    {deck && <ThumbnailGrid 
+      deck={deck} 
+      isEditing={isEditing} 
+      loading={loading} 
+      setLoading={setLoading}
+      selectedLayer={selectedLayer}
+      isDeleting={isDeleting}
+    />}
+    {deck && <BottomButtons 
+      isEditing={isEditing} 
+      setIsEditing={setIsEditing} 
+      selectedLayer={selectedLayer}
+      setSelectedLayer={setSelectedLayer}
+      setIsDeleting={setIsDeleting}
+    />}
   </>
   );
 }
