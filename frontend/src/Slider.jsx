@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 // Get API URL from environment variables with fallback
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+import { API_URL } from "./api";
 
 function Slider({ isEditing, setIsEditing, effect, setEffect }) {
   const [value, setValue] = useState(0.5);
@@ -91,6 +91,26 @@ function Slider({ isEditing, setIsEditing, effect, setEffect }) {
       body: JSON.stringify({ value: newValue }),
     });
   };
+  
+  const handleRightClick = async (e) => {
+    e.preventDefault(); // Prevent the context menu from appearing
+    const defaultValue = sliderConfig[effect]?.defaultValue;
+    
+    if (defaultValue !== undefined) {
+      setValue(defaultValue);
+      
+      // Update Resolume with the default value
+      await fetch(`${API_URL}/update_${effect}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ value: defaultValue }),
+      });
+      
+      console.log(`Reset ${effect} to default value: ${defaultValue}`);
+    }
+  };
 
   const handleDone = () => {
     setIsEditing(false);
@@ -138,13 +158,19 @@ function Slider({ isEditing, setIsEditing, effect, setEffect }) {
             step={currentConfig.step}
             value={value}
             onChange={handleSliderChange}
+            onContextMenu={handleRightClick}
+            title="Right-click to reset to default value"
           />
-          <span id={`${effect}Value`}>
+          <span 
+            id={`${effect}Value`}
+            className={value === sliderConfig[effect]?.defaultValue ? "default-value" : ""}
+          >
             {effect === "zoom"
               ? `${value}%`
               : effect === "shiftX" || effect === "shiftY"
               ? `${value}px`
               : value}
+            {value === sliderConfig[effect]?.defaultValue && " (default)"}
           </span>
         </form>
       </div>

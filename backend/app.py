@@ -6,6 +6,7 @@ from config import app, base_url
 import os
 from werkzeug.utils import secure_filename
 import logging
+import platform
 
 app.secret_key = "cowboy_hackz"
 
@@ -17,6 +18,45 @@ ALLOWED_EXTENSIONS = {
     'jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff', 'webp'
 }
 
+# Path translation for Docker
+def is_running_in_docker():
+    """Detect if we're running inside a Docker container"""
+    # Check for .dockerenv file
+    docker_env = os.path.exists('/.dockerenv')
+    # Check container-specific cgroup
+    try:
+        with open('/proc/1/cgroup', 'rt') as f:
+            return 'docker' in f.read() or docker_env
+    except:
+        return docker_env
+
+# Docker environment flag
+IS_DOCKER = is_running_in_docker()
+
+# Host path (where Resolume can access files)
+# This should be the absolute path on your host machine
+HOST_PATH_PREFIX = '/Users/dylanprado/Documents/coding/resolume_webserver_react/backend'
+# Docker container path prefix
+CONTAINER_PATH_PREFIX = '/app'
+
+def translate_path_for_resolume(file_path):
+    """Translate a container path to a host path that Resolume can access"""
+    if not IS_DOCKER:
+        # If not running in Docker, return the path unchanged
+        return file_path
+    
+    # Get absolute path
+    abs_path = os.path.abspath(file_path)
+    
+    # Replace container path with host path if needed
+    if abs_path.startswith(CONTAINER_PATH_PREFIX):
+        translated_path = abs_path.replace(CONTAINER_PATH_PREFIX, HOST_PATH_PREFIX)
+        print(f"Path translation: {abs_path} -> {translated_path}")
+        return translated_path
+    
+    # If path doesn't need translation, return the original
+    return abs_path
+
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
@@ -25,6 +65,42 @@ logging.basicConfig(level=logging.DEBUG)
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def get_selected_layer():
+    if 'selected_layer' not in session:
+        session['selected_layer'] = '1'
+    return session['selected_layer']
+
+def set_selected_layer(layer):
+    session['selected_layer'] = str(layer)
+
+def get_selected_clip(layer=None):
+    if layer is None:
+        layer = session.get('selected_layer')
+    else:
+        layer = str(layer)
+
+    if 'selected_clips' not in session:
+        session['selected_clips'] = {
+            '1': None,
+            '8': None,
+        }
+    
+    return session['selected_clips'].get(layer)
+
+def set_selected_clip(clip_index, layer=None):
+    if layer is None:
+        layer = session.get('selected_layer')
+    else:
+        layer = str(layer)
+
+    if 'selected_clips' not in session:
+        session['selected_clips'] = {
+            '1': None,
+            '8': None,
+        }
+    
+    session['selected_clips'][layer] = clip_index
 
 @app.route('/deck_selection', methods=['POST'])
 def deck_selection():
@@ -47,6 +123,8 @@ def deck_selection():
 def get_thumbnails():
     deck = request.args.get('deck')
     layer = request.args.get('layer', '1')  # Default to layer 1 if not specified
+    set_selected_layer(layer)
+
     
     if not deck:
         return jsonify({'error': 'No deck specified'}), 400
@@ -65,8 +143,8 @@ def get_thumbnails():
         selection = clip_data.json().get('selected', {}).get('value')
         
         if selection == True:
-            selection_index = clip_index
-        
+            set_selected_clip(clip_index)
+
         if len(decoded_thumbnail) > 528:
             thumbnails.append(decoded_thumbnail)
             titles.append(title)
@@ -77,7 +155,7 @@ def get_thumbnails():
     return jsonify({
         'thumbnails': thumbnails,
         'titles': titles,
-        'selection_index': selection_index
+        'selection_index': session.get('selected_clips', {})
     })
 
 @app.route('/select_output', methods=['POST'])
@@ -95,7 +173,7 @@ def select_output():
     return jsonify({'success': True})
 
 @app.route('/get_selected_clip', methods=['POST', 'GET'])
-def get_selected_clip():
+def handle_selected_clip():
     selected = request.json.get('selected')
     layer = request.json.get('layer', '1')  # Default to layer 1 if not specified
     
@@ -497,21 +575,54 @@ def select_last_clip(layer='1'):
     requests.post(f"{base_url}/composition/layers/{layer}/clips/{clip_index}/connect")
 
 def add_video_to_resolume(file_path):
+    # First verify file exists and is readable
+    if not os.path.isfile(file_path):
+        print(f"Error: File not found or not accessible: {file_path}")
+        return {'error': 'File not found or not accessible'}
+    
+    # Translate path for Resolume (only changes in Docker)
+    resolume_path = translate_path_for_resolume(file_path)
+    print(f"Original file path: {file_path}")
+    print(f"Translated for Resolume: {resolume_path}")
     
     with open(file_path, 'rb') as file:
+        # Use the translated path when sending to Resolume
+        file_url = f"file://{resolume_path}"
+        print(f"Sending to Resolume: {file_url}")
+        
         response = requests.post(
             f"{base_url}/composition/clips/selected/open",
-            data=f"file://{file_path}")
+            data=file_url)
         
+        # Additional error checking
+        if response.status_code != 200:
+            print(f"Error from Resolume API: Status {response.status_code}, Response: {response.text}")
     
     return response.json() if response.text else {'success': True}
 
 def add_image_to_resolume(file_path):
+    # First verify file exists and is readable
+    if not os.path.isfile(file_path):
+        print(f"Error: File not found or not accessible: {file_path}")
+        return {'error': 'File not found or not accessible'}
+    
+    # Translate path for Resolume (only changes in Docker)
+    resolume_path = translate_path_for_resolume(file_path)
+    print(f"Original file path: {file_path}")
+    print(f"Translated for Resolume: {resolume_path}")
     
     with open(file_path, 'rb') as file:
+        # Use the translated path when sending to Resolume
+        file_url = f"file://{resolume_path}"
+        print(f"Sending to Resolume: {file_url}")
+        
         response = requests.post(
             f"{base_url}/composition/clips/selected/open",
-            data=f"file://{file_path}")
+            data=file_url)
+        
+        # Additional error checking
+        if response.status_code != 200:
+            print(f"Error from Resolume API: Status {response.status_code}, Response: {response.text}")
         
     return response.json() if response.text else {'success': True}
 
@@ -538,6 +649,5 @@ def clear_all():
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    import os
     port = int(os.environ.get('PORT', 5000))
     app.run(debug=True, host='0.0.0.0', port=port)

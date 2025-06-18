@@ -7,6 +7,7 @@ services:
     container_name: resolume-backend
     ports:
       - "5001:5001"
+      - "0.0.0.0:5001:5001"  # Explicitly bind to all interfaces
     environment:
       - PORT=5001
       - FLASK_ENV=production
@@ -19,14 +20,15 @@ services:
 
   # Frontend service (React)
   frontend:
-    build: ./frontend
+    build: 
+      context: ./frontend
+      args:
+        - API_URL=window.location.protocol + "//" + window.location.hostname + ":5001"  # Dynamic API URL based on accessing hostname
     container_name: resolume-frontend
     ports:
       - "80:80"  # Map to standard HTTP port for easy access
     depends_on:
       - backend
-    environment:
-      - VITE_API_URL=http://localhost:5001  # Will be replaced during build
     restart: unless-stopped
     networks:
       - resolume-network

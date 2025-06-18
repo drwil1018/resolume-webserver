@@ -1,12 +1,15 @@
 import { useState, useEffect, useRef } from "react";
 
 // Get API URL from environment variables with fallback
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+import { API_URL } from "./api";
 
 function ThumbnailGrid({ deck, loading, setLoading, selectedLayer, isDeleting }) {
     const [thumbnails, setThumbnails] = useState([]);
     const [titles, setTitles] = useState([]);
-    const [selectedIndex, setSelectedIndex] = useState(null);
+    const [selectedIndex, setSelectedIndex] = useState({
+        '1': null,
+        '8': null
+    });
     const [error, setError] = useState(null);
     const [isDragging, setIsDragging] = useState(false);
     const [uploadProgress, setUploadProgress] = useState(0);
@@ -55,7 +58,7 @@ function ThumbnailGrid({ deck, loading, setLoading, selectedLayer, isDeleting })
       }
       
       sendSelectedClip();
-    }, [selectedIndex, selectedLayer]);
+    }, [selectedIndex]);
 
     function handleThumbnailClick(index) {
         setSelectedIndex(index + 1);

@@ -1,7 +1,7 @@
 #!/bin/zsh
 
 # Configuration
-BACKEND_PORT=5001  # Changed from 5000 to avoid conflict with AirPlay
+BACKEND_PORT=5002  # Changed from 5000 to avoid conflict with AirPlay
 FRONTEND_PORT=3000
 
 # Get the local IP address

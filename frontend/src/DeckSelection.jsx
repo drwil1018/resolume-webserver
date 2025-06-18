@@ -3,7 +3,7 @@ import ThumbnailGrid from './ThumbnailGrid';
 import BottomButtons from './BottomButtons';
 
 // Get API URL from environment variables with fallback
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+import { API_URL } from "./api";
 
 function DeckSelection({ isEditing, setIsEditing, selectedLayer, setSelectedLayer }) {
     const [deck, setDeck] = useState();

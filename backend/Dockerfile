@@ -13,6 +13,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of the application code
 COPY . .
 
+# Replace config.py with config.docker.py
+RUN cp config.docker.py config.py
+
 # Create the uploads directory if it doesn't exist
 RUN mkdir -p resolume_uploads
 
@@ -23,6 +26,7 @@ EXPOSE 5001
 ENV FLASK_APP=app.py
 ENV FLASK_ENV=production
 ENV PORT=5001
+ENV CONFIG_FILE=config.docker.py
 
 # Command to run the application
 CMD ["python", "app.py"]

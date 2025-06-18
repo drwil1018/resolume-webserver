@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 // Get API URL from environment variables with fallback
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+import { API_URL } from "./api";
 
 function BottomButtons({ isEditing, setIsEditing, selectedLayer, setSelectedLayer, setIsDeleting}) {
     const [isOutputSelected, setIsOutputSelected] = useState(false);
